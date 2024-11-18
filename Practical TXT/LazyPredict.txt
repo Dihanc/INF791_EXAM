@@ -1,0 +1,180 @@
+LazyPredict
+LazyPredict
+Let's create comprehensive notes on Lazy Predict, Unsupervised Learning, and Naive
+Bayes Classifier (NB) with specific use cases and implementations using the UGRansom
+dataset.
+Let's create comprehensive notes on Lazy Predict, Unsupervised Learning, and Naive
+Bayes Classifier (NB) with specific use cases and implementations using the UGRansom
+dataset.
+We'll walk through each topic and demonstrate how to leverage the UGRansom dataset to build
+meaningful insights using these techniques. The UGRansom dataset is used for anomaly
+detection, particularly in the context of cybersecurity to identify network intrusions.
+We'll walk through each topic and demonstrate how to leverage the UGRansom dataset to build
+meaningful insights using these techniques. The UGRansom dataset is used for anomaly
+detection, particularly in the context of cybersecurity to identify network intrusions.
+1. Lazy Predict on UGRansom Dataset
+What is Lazy Predict?
+1. Lazy Predict on UGRansom Dataset
+What is Lazy Predict?
+Lazy Predict is a Python package that allows you to quickly train, test, and compare a variety of
+machine learning models on your dataset with minimal effort. It is ideal for benchmarking and
+identifying which algorithms are worth exploring further.
+Installation
+Make sure you have installed the necessary library:
+Lazy Predict is a Python package that allows you to quickly train, test, and compare a variety of
+machine learning models on your dataset with minimal effort. It is ideal for benchmarking and
+identifying which algorithms are worth exploring further.
+Installation
+Make sure you have installed the necessary library:
+pip
+pip install lazypredict
+Lazypredict
+Loading and Preprocessing the UGRansom Dataset
+Before using Lazy Predict, let's preprocess the UGRansom dataset.
+Loading and Preprocessing the UGRansom Dataset
+Before using Lazy Predict, let's preprocess the UGRansom dataset.
+import pandas as pd
+from Lazypredict.Supervised import LazyClassifier
+TLum sKLeacn.model_selection import train_test_spLlit
+import pandas as pd
+from lazypredict.Supervised import LazyClassifier
+from sklearn.model_selection import train_test_split
+# Load the UGRansom dataset
+file_path ='path/to/ugransome.csv' # Update with your dataset path
+df = pd.read_csv(file_path)
+file path = 'path/to/ugransome.csv'
+ut = pd.read_csv(file_path)
+# Display dataset information
+print("Dataset shape:", df.shape)
+print("Dataset shape:", df.shape)
+
+print(df.head())
+# Feature selection: Assuming 'score' and 'sentiment' are features, and
+'threat' is the target
+X = df[['score','sentiment_encoded']]
+y = df['nature_encoded']
+# Handling missing values if any
+X = X.fillna(0)
+# Split dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+random_state=42)
+# Apply Lazy Predict
+clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
+models, predictions = clf.fit(X_train, X_test, y_train, y_test)
+# Display the top models
+print(models.head(10))
+Analysis of Results
+Accuracy: Displays the accuracy of each model.
+F1 Score: Useful for understanding performance when dealing with imbalanced datasets.
+Inference Time: Helps in selecting models for real-time applications.
+2. Unsupervised Learning on UGRansom
+Dataset
+Unsupervised Learning Overview
+Unsupervised learning involves discovering patterns and hidden structures in unlabeled data.
+For the UGRansom dataset, unsupervised learning can be particularly useful for anomaly
+detection and clustering network traffic to identify potential intrusions.
+Clustering with K-Means
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+# Load the UGRansom dataset
+df = pd.read_csv(file_path)
+# Feature selection
+features =['score','sentiment_encoded']
+X = df[features]
+# Standardize the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+# Apply KMeans clustering
+kmeans = KMeans(n_clusters=3, random_state=42)
+df['Cluster']= kmeans.fit_predict(X_scaled)
+# Visualize the clusters
+sns.pairplot(df, hue='Cluster', palette='viridis')
+plt.title("K-Means Clustering of UGRansom Data")
+plt.show()
+Anomaly Detection with Isolation Forest
+from sklearn.ensemble import IsolationForest
+# Fit the Isolation Forest model
+isolation_forest = IsolationForest(n_estimators=100, contamination=0.1,
+random_state=42)
+df['anomaly']= isolation_forest.fit_predict(X_scaled)
+# Visualize anomalies
+sns.scatterplot(data=df, x='score', y='sentiment_encoded', hue='anomaly',
+palette={1:'green',-1:'red'})
+plt.title("Anomaly Detection on UGRansom Data")
+plt.show()
+Use Cases
+Clustering: Segment network traffic data into different clusters to identify potential attack
+patterns.
+Anomaly Detection: Flag unusual patterns in the data that may indicate intrusions.
+
+3. Naive Bayes Classifier (NB) on
+UGRansom Dataset
+Overview of Naive Bayes
+Naive Bayes is a probabilistic classifier based on Bayes' Theorem. It assumes that the features
+are independent of each other, which makes it simple and efficient. For UGRansom data, we
+can use Naive Bayes for classifying network threats.
+Naive Bayes Implementation
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report,
+confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+# Load the dataset and preprocess
+df = pd.read_csv(file_path)
+# Encode categorical features
+from sklearn.preprocessing import LabelEncoder
+le_sentiment = LabelEncoder()
+df['sentiment_encoded']= le_sentiment.fit_transform(df['sentiment'])
+le_nature = LabelEncoder()
+df['nature_encoded']= le_nature.fit_transform(df['nature'])
+# Prepare features and target variable
+X = df[['score','sentiment_encoded']]
+y = df['nature_encoded']
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+random_state=42)
+# Train Naive Bayes model
+nb_model = MultinomialNB()
+nb_model.fit(X_train, y_train)
+# Make predictions
+y_pred = nb_model.predict(X_test)
+# Evaluate model
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm,
+display_labels=le_nature.classes_)
+disp.plot(cmap='Blues')
+plt.title("Confusion Matrix - Naive Bayes on UGRansom Data")
+plt.show()
+Interpreting the Results
+Accuracy: Measures how often the model is correct.
+Precision & Recall: Useful for evaluating performance on imbalanced datasets.
+Confusion Matrix: Shows the counts of actual vs predicted classifications.
+Use Cases
+Spam Filtering: Identifying malicious network traffic based on historical data.
+Threat Classification: Categorizing the type of threat (e.g., spam, SSH, DoS) based on
+network features.
+Conclusion
+Summary
+Lazy Predict quickly benchmarks various models and gives you an idea of which
+algorithms are worth fine-tuning.
+Unsupervised Learning can be effectively used for anomaly detection and clustering in
+cybersecurity data.
+Naive Bayes is a powerful and efficient method for classifying network threats using
+labeled data.
+Next Steps
+Perform Hyperparameter Tuning on models that performed well using Lazy Predict.
+Apply Dimensionality Reduction techniques like PCA if the dataset has too many
+features.
+
+Use Explainable AI (XAI) techniques to understand why a model made certain
+predictions.
+These techniques provide a robust approach to analyzing the UGRansom dataset, helping
+identify patterns and classify network intrusions effectively.
+Would you like to dive deeper into any of these topics or explore more advanced techniques on
+the dataset?

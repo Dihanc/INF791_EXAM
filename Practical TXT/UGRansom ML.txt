@@ -1,0 +1,148 @@
+you can fully understand what's happening at each step, along with explanations of the parameters used.
+?? Phase 1: Data Collection and Loading
+
+Explanation:
+
+pd.read_csv() : Loads the dataset from the specified path.
+is the path to your dataset.
+Renaming Columns: Assigns readable column names to improve clarity.
+
+
+
+?? Data Cleaning
+Step 1: Correcting Misspelled Values
+
+Explanation:
+
+str.replace() : Corrects spelling mistakes in the 'Threats' column.
+
+Step 2: Dropping Duplicate Rows
+
+Explanation:
+
+drop_duplicates() : Removes rows that are identical.
+
+
+
+?? Data Transformation
+
+Handling the 'Time' Column
+
+Explanation:
+
+This is used to shift all time entries by 11 units, possibly for correcting time zone differences or alignment.
+Applying Mathematical Transformations to Reduce Skewness
+
+Transformations help normalize data distribution, making it easier for models to learn patterns.
+
+Log Transformation on
+
+
+np.log() : Compresses the range of data, especially useful for right-skewed distributions.
++1 : Ensures no issues with log(0), as the logarithm of zero is undefined.
+
+Square Root Transformation on
+
+
+np.sqrt() : Reduces skewness but is less aggressive than log transformations.
+
+Yeo-Johnson Transformation on
+
+
+Yeo-Johnson: Handles both positive and negative values, making it more versatile than Box-Cox.
+
+
+
+?? Data Normalization and Scaling
+
+Explanation:
+
+StandardScaler: Scales features to have a mean of 0 and standard deviation of 1. Normalization is essential for models sensitive to feature scaling (e.g., SVM, KNN).
+
+
+
+?? Data Visualization
+Plotting Transformed Data Distributions
+
+Explanation:
+
+plt.hist() : Plots histograms for visualizing the distribution of transformed features. Multiple histograms are overlaid to compare distributions.
+Density Plot of Normalized Features
+
+
+
+
+?? Encoding Categorical Variables
+
+from sklearn import preprocessing
+
+lab_encoder = preprocessing.LabelEncoder()
+df2['Protocol'] = lab_encoder.fit_transform(df2['Protocol']) df2['Flag'] = lab_encoder.fit_transform(df2['Flag']) df2['Family'] = lab_encoder.fit_transform(df2['Family'])
+df2['SeedAddress'] = lab_encoder.fit_transform(df2['SeedAddress']) df2['ExpAddress'] = lab_encoder.fit_transform(df2['ExpAddress']) df2['IPaddress'] = lab_encoder.fit_transform(df2['IPaddress'])
+
+
+
+Explanation:
+
+LabelEncoder: Converts categorical values into numeric labels.
+
+
+
+?? Model Training and Evaluation
+Splitting Data into Training and Testing Sets
+
+Explanation:
+
+train_test_split(): Splits the data into training (80%) and testing (20%) sets.
+
+
+
+?? Ensemble Models: Random Forest, SVM, Naive Bayes
+
+from sklearn.ensemble import RandomForestClassifier from sklearn.svm import LinearSVC
+from sklearn.naive_bayes import GaussianNB
+
+# Random Forest
+rf = RandomForestClassifier(n_estimators=100, random_state=42) rf.fit(X_train, y_train)
+rf_pred = rf.predict(X_test)
+rf_accuracy = accuracy_score(rf_pred, y_test)
+
+# SVM
+svr = LinearSVC() svr.fit(X_train, y_train) svr_pred = svr.predict(X_test)
+svr_accuracy = accuracy_score(svr_pred, y_test)
+
+# Naive Bayes
+nb = GaussianNB() nb.fit(X_train, y_train)
+
+
+
+Explanation:
+
+RandomForestClassifier: Uses an ensemble of decision trees for classification.
+LinearSVC: A linear support vector classifier.
+GaussianNB: Naive Bayes classifier for normally distributed data.
+
+
+
+?? Evaluating Model Performance
+
+
+
+
+?? Ensemble Learning with Stacking Classifier
+
+
+
+
+?? Visualization of Model Metrics
+
+models = ['Random Forest', 'SVM', 'Naive Bayes', 'Ensemble Learning'] accuracies = [rf_accuracy, svr_accuracy, nb_accuracy, eb_accuracy]
+
+plt.figure(figsize=(10, 6))
+
+
+
+
+
+
+This comprehensive breakdown should help you understand each part of the process. Let me know if you have further questions or need clarification on any specific section!

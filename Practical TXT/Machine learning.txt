@@ -1,0 +1,394 @@
+Machine learning
+
+
+
+?? Section 1: Importing Libraries and Dependencies
+1.1 Making the split
+
+If you want to call more than one in a df you put double square brackets instead of single Before starting, make sure you have installed all the necessary packages:
+1.1 Required Package Installations
+
+1.2 Importing Libraries
+
+
+
+
+
+
+?? Section 2: Data Loading and Initial Exploration
+2.1 Loading the Data
+
+2.2 Understanding the Data
+
+Explanation:
+
+gives the number of rows and columns.
+    identifies columns with missing values. provides summary statistics (mean, median, etc.).
+shows data types and non-null counts.
+
+
+
+?? Section 3: Data Cleaning & Preprocessing
+
+3.1 Handling Missing Values
+
+Explanation:
+
+Median is used for numerical data to avoid skewing due to outliers.
+Mode is used for categorical features to fill with the most frequent value.
+
+3.2 Removing Duplicates
+
+
+
+
+?? Section 4: Feature Encoding
+4.1 Label Encoding (For Binary/Ordinal Categories)
+
+Explanation: Label encoding converts categorical values into integers (0, 1, 2, etc.), useful for binary classification.
+4.2 One-Hot Encoding (For Nominal Categories)
+
+Explanation: One-hot encoding converts categorical values into multiple binary columns (dummy variables), avoiding ordinal relationships.
+
+
+
+?? Section 5: Feature Scaling
+5.1 Standardization
+
+Explanation:
+
+Standardization transforms data to have a mean of 0 and standard deviation of 1. Useful for models like SVM, KNN, and Neural Networks.
+5.2 Normalization (Min-Max Scaling)
+
+Explanation:
+
+Normalization scales features between 0 and 1.
+Useful for algorithms like Neural Networks that are sensitive to feature scales.
+
+5.3 Log Transformation
+
+Explanation: Log transformation is used to reduce skewness in data.
+
+
+
+?? Section 6: Data Visualization for EDA
+6.1 Distribution Plot
+
+
+6.2 Correlation Heatmap
+
+6.3 Boxplot for Outliers
+
+6.4 Pairplot for Feature Relationships
+
+?? Section 7: Splitting Data into Training and Testing Sets
+
+?? Section 8: Training Machine Learning Models
+8.1 Logistic Regression
+
+
+8.2 Random Forest
+
+8.3 Support Vector Machine (SVM)
+
+
+
+
+? Section 9: Model Evaluation
+9.1 Confusion Matrix
+
+9.2 Classification Report
+
+9.3 ROC Curve and AUC
+
+
+9.4 Precision-Recall Curve
+
+10.1 Cross-Validation
+
+10.2 Hyperparameter Tuning with GridSearchCV
+
+
+
+
+1. Decision Trees
+What is a Decision Tree?
+
+A Decision Tree is a supervised machine learning algorithm used for both classification and regression tasks.
+It splits the dataset into subsets based on the most significant feature at each step, forming a tree-like structure of decisions.
+The nodes represent features, the branches represent decision rules, and the leaves represent outcomes (class labels or values).
+How Does a Decision Tree Work?
+
+1. Root Node: The initial node, which represents the entire dataset, is split using the best feature.
+2. Decision Nodes: Nodes where the dataset is split further.
+3. Leaf Nodes: Terminal nodes that represent the final output (class or value).
+
+4. Splitting Criteria: Measures like Gini Impurity, Entropy (Information Gain), and Mean Squared Error (for regression) are used to determine the best splits.
+
+
+
+Implementation of Decision Tree Classifier
+Code Example
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score, classification_report,
+ConfusionMatrixDisplay
+import matplotlib.pyplot as plt import seaborn as sns
+
+# Load the dataset (example using the UGRansome dataset) df = pd.read_csv('ugransome.csv')
+df['sentiment_encoded'] = df['sentiment'].astype('category').cat.codes
+
+# Define features and target variable
+X = df[['score', 'sentiment_encoded']]
+y = df['nature'].astype('category').cat.codes
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train a Decision Tree model
+dt_model = DecisionTreeClassifier(max_depth=5, random_state=42) dt_model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = dt_model.predict(X_test)
+
+# Evaluate the model
+print("Accuracy:", accuracy_score(y_test, y_pred)) print(classification_report(y_test, y_pred)) ConfusionMatrixDisplay.from_estimator(dt_model, X_test, y_test) plt.show()
+
+
+
+How to Plot a Decision Tree
+Visualizing the Decision Tree
+
+Explanation:
+
+The	function visualizes the splits, showing the feature, threshold, Gini/Entropy
+value, and the samples at each node.
+Feature importance can also be plotted to show which features have the most influence on the model.
+
+
+
+
+2. Logistic Regression
+What is Logistic Regression?
+
+Logistic Regression is a supervised learning algorithm used for binary classification.
+It models the probability that an instance belongs to a particular class using the logistic function (sigmoid).
+It outputs a probability between 0 and 1, which can be thresholded to classify data points.
+
+Sigmoid Function
+[
+\text{Sigmoid}(z) = \frac{1}{1 + e^{-z}}
+]
+
+z is the linear combination of input features (i.e., ( z = w_1x_1 + w_2x_2 + ... + b )).
+
+Implementation of Logistic Regression
+Code Example
+
+Explanation:
+
+The ROC curve shows the trade-off between sensitivity (True Positive Rate) and specificity (1 - False Positive Rate).
+The AUC (Area Under Curve) provides a single value summary of the model's performance.
+
+
+
+3. Support Vector Machines (SVM)
+What is SVM?
+
+SVM is a supervised learning algorithm used for classification and regression.
+It finds the hyperplane that best separates the data into classes, maximizing the margin between classes.
+It is effective in high-dimensional spaces and is robust to outliers using the soft margin.
+
+Kernel Trick
+
+Linear Kernel: Used when data is linearly separable.
+Polynomial/RBF Kernel: Used when data is not linearly separable.
+
+Plotting SVM Decision Boundaries
+Code Example
+
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report import numpy as np
+
+# Train an SVM model with RBF kernel
+svm_model = SVC(kernel='rbf', C=1.0, probability=True) svm_model.fit(X_train, y_train)
+
+# Predict on test data
+y_pred = svm_model.predict(X_test) print(classification_report(y_test, y_pred))
+
+# Plot SVM decision boundary (for 2D data only) def plot_svm_boundary(X, y, model):
+plt.figure(figsize=(10, 6))
+h = 0.02	# Step size in the mesh
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max,
+h))
+
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()]) Z = Z.reshape(xx.shape)
+
+plt.contourf(xx, yy, Z, alpha=0.8)
+sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=y, edgecolor='k')
+
+
+
+Explanation:
+
+The	function visualizes how the SVM model separates the classes
+using a decision boundary.
+The support vectors (data points closest to the hyperplane) are critical for defining the boundary.
+
+
+
+Summary of Key Differences
+
+
+ModelUse CaseAdvantagesLimitationsDecision TreeClassification & RegressionEasy to interpret, handles non-linearityProne to overfittingLogistic RegressionBinary ClassificationSimple, interpretable, probabilistic outputAssumes linearitySVMClassification & RegressionEffective in high dimensions, works well with outliersExpensive to train with large data
+
+
+Regresion Models
+When working with continuous data, you're typically dealing with regression problems, where the target variable is a continuous numerical value (e.g., predicting house prices, temperature, stock prices, etc.).
+
+Below is a list of models that work well with continuous data:
+
+
+
+1. Linear Models For Continuous data
+1.1 Linear Regression
+
+Description: Fits a straight line to minimize the difference between actual and predicted values.
+Use Case: When there's a linear relationship between features and the target.
+Implementation:
+
+
+1.2 Ridge Regression (L2 Regularization)
+
+Description: Regularized version of Linear Regression that penalizes large coefficients.
+Use Case: Reduces overfitting in linear models.
+Implementation:
+
+
+1.3 Lasso Regression (L1 Regularization)
+
+Description: Similar to Ridge but can shrink some coefficients to zero, performing feature selection.
+Use Case: When you want to select important features automatically.
+Implementation:
+
+
+1.4 Polynomial Regression
+
+Description: Extends Linear Regression by adding polynomial features. Use Case: When the relationship between features and target is non-linear. Implementation:
+
+
+
+
+
+
+2. Tree-Based Models
+2.1 Decision Tree Regression
+
+Description: Splits data into branches to predict continuous values.
+Use Case: Works well for capturing non-linear relationships.
+Implementation:
+
+
+2.2 Random Forest Regression
+
+Description: Ensemble model using multiple decision trees for better generalization.
+Use Case: Reduces overfitting and handles complex data.
+Implementation:
+
+
+2.3 Gradient Boosting Regression
+
+Description: Builds an ensemble of trees in a sequential manner, reducing errors of the previous trees.
+Use Case: Provides high accuracy, often used in competitions.
+Implementation:
+
+
+
+
+2.4 XGBoost Regression
+
+Description: An optimized version of Gradient Boosting that is faster and more efficient.
+Use Case: When you need high accuracy and efficiency.
+Implementation:
+
+
+
+
+
+3. Support Vector Machines
+3.1 Support Vector Regression (SVR)
+
+Description: Uses kernel functions to fit the data within a margin.
+Use Case: Effective in high-dimensional spaces and for non-linear data.
+Implementation:
+
+
+
+
+
+4. Neural Networks
+4.1 Multi-Layer Perceptron (MLP) Regression
+
+Description: A type of neural network that can learn complex patterns.
+Use Case: Useful for modeling non-linear relationships and high-dimensional data.
+Implementation:
+
+
+
+
+4.2 Deep Learning Models (Keras/TensorFlow)
+
+Description: Custom neural networks using deep learning frameworks. Use Case: Useful for large datasets and complex non-linear relationships. Implementation:
+
+
+
+
+
+5. K-Nearest Neighbors Regression
+5.1 KNN Regression
+
+Description: Predicts values based on the average of the k-nearest neighbors.
+Use Case: Simple and interpretable, but sensitive to noisy data.
+Implementation:
+
+
+
+
+
+6. Evaluation Metrics for Regression
+6.1 R² Score (Coefficient of Determination)
+
+Measures how well the model explains the variance of the target variable.
+Implementation:
+
+
+6.2 Mean Squared Error (MSE)
+
+Measures the average squared difference between actual and predicted values.
+Implementation:
+
+
+6.3 Mean Absolute Error (MAE)
+
+Measures the average absolute difference between actual and predicted values.
+Implementation:
+
+
+6.4 Root Mean Squared Error (RMSE)
+
+Provides a metric in the same units as the target variable.
+Implementation:
+
+
+
+
+
+Summary
+
+
+ModelBest ForLinear RegressionSimple linear relationships
+ModelBest ForRidge/Lasso RegressionReducing overfittingPolynomial RegressionNon-linear relationshipsDecision Tree RegressionNon-linear, interpretable modelsRandom ForestRobust, reduces overfittingGradient Boosting/XGBoostHigh accuracy, competition-level modelsSVRHigh-dimensional, non-linear dataNeural Networks (MLP)Complex patterns, non-linear dataKNN RegressionSimple, interpretable

@@ -1,0 +1,131 @@
+Ensemble (Stacking)
+Types of Ensemble Learning Methods
+1. Bagging (Bootstrap Aggregating)
+Bagging involves training multiple models on different subsets of the training data (sampled with
+replacement) and combining their predictions.
+Key Algorithm: Random Forest
+Use Case: Reduces variance and prevents overfitting.
+
+Implementation in Python (Random Forest Example)
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+# Train a Random Forest classifier
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+# Predict on test set
+y_pred_rf = rf_model.predict(X_test)
+# Calculate accuracy
+print(f"Random Forest Accuracy: {accuracy_score(y_test, y_pred_rf):.2f}")
+
+2. Boosting
+Boosting is an iterative method that focuses on correcting the errors of previous models by
+assigning higher weights to misclassified instances. Each subsequent model is trained to
+address the mistakes of the prior models.
+Key Algorithms: AdaBoost, Gradient Boosting, XGBoost, LightGBM
+Use Case: Reduces bias and can achieve high accuracy, especially on complex datasets.
+
+Implementation in Python (Gradient Boosting Example)
+from sklearn.ensemble import GradientBoostingClassifier
+# Train a Gradient Boosting classifier
+gb_model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1,
+random_state=42)
+gb_model.fit(X_train, y_train)
+# Predict on test set
+y_pred_gb = gb_model.predict(X_test)
+# Calculate accuracy
+print(f"Gradient Boosting Accuracy: {accuracy_score(y_test, y_pred_gb):.2f}")
+
+3. Stacking (Stacked Generalization)
+Stacking involves training multiple models (base learners) and then using their predictions as
+features for a higher-level meta-learner model.
+Key Idea: The meta-learner combines the strengths of the base models to improve overall
+performance.
+Use Case: Useful when you have a diverse set of models that perform well individually.
+
+Implementation in Python (Stacking Example)
+from sklearn.ensemble import StackingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+# Define base learners
+base_learners = [
+('rf', RandomForestClassifier(n_estimators=100, random_state=42)),
+('gb', GradientBoostingClassifier(n_estimators=100, random_state=42)),
+('svc', SVC(probability=True))
+]
+# Define the meta-learner
+meta_learner = LogisticRegression()
+
+# Create a Stacking Classifier
+stack_model = StackingClassifier(estimators=base_learners,
+final_estimator=meta_learner, cv=5)
+stack_model.fit(X_train, y_train)
+# Predict on test set
+y_pred_stack = stack_model.predict(X_test)
+print(f"Stacking Classifier Accuracy: {accuracy_score(y_test,
+y_pred_stack):.2f}")
+
+Validation of Ensemble Models
+Validation is crucial for evaluating the effectiveness of ensemble models. We'll discuss different
+metrics and validation techniques to ensure that the model generalizes well.
+
+1. Confusion Matrix
+The confusion matrix is a performance measurement tool for classification problems, showing
+the counts of True Positives, False Positives, True Negatives, and False Negatives.
+
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+cm = confusion_matrix(y_test, y_pred_stack)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+disp.plot(cmap='Blues')
+plt.title('Confusion Matrix for Stacking Classifier')
+plt.show()
+
+2. ROC Curve & AUC Score
+The ROC curve and AUC score are used to evaluate the performance of classification models,
+especially in binary classification tasks.
+
+from sklearn.metrics import roc_curve, auc
+y_pred_proba = stack_model.predict_proba(X_test)[:, 1]
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+roc_auc = auc(fpr, tpr)
+
+plt.plot(fpr, tpr, label=f'AUC = {roc_auc:.2f}')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend()
+plt.grid()
+plt.show()
+
+3. Cross-Validation
+Cross-validation helps in assessing the robustness of a model by training it on different subsets
+of the data.
+
+from sklearn.model_selection import cross_val_score
+cv_scores = cross_val_score(stack_model, X, y, cv=5, scoring='accuracy')
+print(f'Cross-Validation Accuracy: {np.mean(cv_scores):.2f} ±
+{np.std(cv_scores):.2f}')
+
+4. Classification Report
+A comprehensive report that includes metrics like precision, recall, F1 score, and support.
+
+from sklearn.metrics import classification_report
+print("Classification Report:\n", classification_report(y_test, y_pred_stack))
+
+Advantages of Ensemble Learning
+Improved Accuracy: Combining models generally leads to better accuracy than individual
+models.
+Reduced Overfitting: Bagging techniques (like Random Forest) are particularly good at
+reducing overfitting.
+Adaptability: Boosting techniques adapt to the data by giving more weight to misclassified
+samples.
+
+Challenges of Ensemble Learning
+Complexity: Ensemble models can be complex to interpret and require more
+computational resources.
+Overfitting: Boosting methods, especially with many iterations, may overfit if not properly
+regularized.
+Longer Training Time: Training multiple models can be time-consuming, especially for
+large datasets.
+
+
